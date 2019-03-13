@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:loja_flutter/data/cart_product.dart';
 import 'package:loja_flutter/data/product_data.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:loja_flutter/models/cart_model.dart';
+import 'package:loja_flutter/models/user_model.dart';
+import 'package:loja_flutter/screens/cart_screen.dart';
+import 'package:loja_flutter/screens/login_screen.dart';
 
 class ProductScreen extends StatefulWidget {
   final ProductData productData;
@@ -101,10 +106,28 @@ class _ProductScreenState extends State<ProductScreen> {
                 SizedBox(
                   height: 44,
                   child: RaisedButton(
-                    onPressed: size != null ? () {} : null,
+                    onPressed: size != null
+                        ? () {
+                            if (UserModel.of(context).isLoggedIn()) {
+                              CartProduct cartProduct = CartProduct();
+                              cartProduct.size = size;
+                              cartProduct.quantity = 1;
+                              cartProduct.pid = productData.id;
+                              cartProduct.category = productData.category;
+                              CartModel.of(context).addCartItem(cartProduct);
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => CartScreen()));
+                            } else {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => LoginScreen()));
+                            }
+                          }
+                        : null,
                     color: primaryColor,
                     child: Text(
-                      'Adicionar ao carrinho',
+                      UserModel.of(context).isLoggedIn()
+                          ? 'Adicionar ao carrinho'
+                          : 'Entre para comprar',
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
