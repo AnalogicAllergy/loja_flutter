@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:loja_flutter/models/cart_model.dart';
 
 class DiscountCard extends StatelessWidget {
   @override
@@ -24,8 +26,29 @@ class DiscountCard extends StatelessWidget {
             child: TextFormField(
               decoration: InputDecoration(
                   border: OutlineInputBorder(), hintText: 'Insira seu cupom'),
+              initialValue: CartModel.of(context).couponCode ?? "",
+              onFieldSubmitted: (text) {
+                Firestore.instance
+                    .collection('coupons')
+                    .document(text)
+                    .get()
+                    .then((docSnap) {
+                  if (docSnap.data != null) {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text(
+                          "Desconto de ${docSnap.data['percent']}% aplicado!"),
+                      backgroundColor: Theme.of(context).primaryColor,
+                    ));
+                  } else {
+                    Scaffold.of(context).showSnackBar(SnackBar(
+                      content: Text("Cupom inválido"),
+                      backgroundColor: Colors.redAccent,
+                    ));
+                  }
+                });
+              },
             ),
-          )
+          ),
         ],
       ),
     );
