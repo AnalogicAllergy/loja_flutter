@@ -76,4 +76,10 @@ class CartModel extends Model {
         query.documents.map((doc) => CartProduct.fromDocument(doc)).toList();
     notifyListeners();
   }
+
+  //setar o cupom no valor da compra
+  void setCoupon(String couponCode, int discountPercentage) {
+    this.couponCode = couponCode;
+    this.discountPercentage = discountPercentage;
+  }
 }
