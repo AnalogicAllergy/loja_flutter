@@ -95,7 +95,12 @@ class CartScreen extends StatelessWidget {
                 }).toList()),
                 DiscountCard(),
                 ShipCard(),
-                CartPrice(),
+                CartPrice(() async {
+                  String orderID = await model.finishOrder();
+                  if (orderID != null) {
+                    print(orderID);
+                  }
+                }),
               ],
             );
           }

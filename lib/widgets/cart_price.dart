@@ -3,6 +3,9 @@ import 'package:loja_flutter/models/cart_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class CartPrice extends StatelessWidget {
+  final VoidCallback buy;
+  CartPrice(this.buy);
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -11,6 +14,10 @@ class CartPrice extends StatelessWidget {
         padding: EdgeInsets.all(16),
         child: ScopedModelDescendant<CartModel>(
           builder: (context, child, model) {
+            double price = model.getProductsPrice();
+            double discount = model.getDiscount();
+            double shipment = model.getShipPrice();
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -26,7 +33,7 @@ class CartPrice extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text('Subtotal'),
-                    Text('R\$ 0.00'),
+                    Text('R\$ ${price.toStringAsFixed(2)}'),
                   ],
                 ),
                 Divider(),
@@ -34,7 +41,7 @@ class CartPrice extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text('Desconto'),
-                    Text('R\$ 0.00'),
+                    Text('R\$ ${discount.toStringAsFixed(2)}'),
                   ],
                 ),
                 Divider(),
@@ -42,7 +49,7 @@ class CartPrice extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text('Entrega'),
-                    Text('R\$ 0.00'),
+                    Text('R\$ ${shipment.toStringAsFixed(2)}'),
                   ],
                 ),
                 Divider(),
@@ -57,7 +64,7 @@ class CartPrice extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     Text(
-                      'R\$ 0.00',
+                      'R\$ ${(price + shipment - discount).toStringAsFixed(2)}',
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.bold,
@@ -69,11 +76,10 @@ class CartPrice extends StatelessWidget {
                   height: 12,
                 ),
                 RaisedButton(
-                  child: Text('Finalizar Pedido'),
-                  textColor: Colors.white,
-                  color: Theme.of(context).primaryColor,
-                  onPressed: () {},
-                )
+                    child: Text('Finalizar Pedido'),
+                    textColor: Colors.white,
+                    color: Theme.of(context).primaryColor,
+                    onPressed: buy)
               ],
             );
           },
