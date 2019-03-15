@@ -36,4 +36,26 @@ class CartModel extends Model {
     products.remove(cartProduct);
     notifyListeners();
   }
+
+  void decProduct(CartProduct cartProduct) {
+    cartProduct.quantity--;
+    Firestore.instance
+        .collection('users')
+        .document(user.firebaseUser.uid)
+        .collection('cart')
+        .document(cartProduct.cid)
+        .updateData(cartProduct.toMap());
+    notifyListeners();
+  }
+
+  void incProduct(CartProduct cartProduct) {
+    cartProduct.quantity++;
+    Firestore.instance
+        .collection('users')
+        .document(user.firebaseUser.uid)
+        .collection('cart')
+        .document(cartProduct.cid)
+        .updateData(cartProduct.toMap());
+    notifyListeners();
+  }
 }
